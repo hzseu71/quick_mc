@@ -40,9 +40,9 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
 
 # 示例用法
 if __name__ == "__main__":
-    air_image_path = "./image/P50_muti_100kv_repeat_1_Air_517_3.raw"  # 替换为空气图像的路径
-    for pmma_thickness in range(50, 51, 10):
-        projection_image_path = f"./image/P{pmma_thickness}_muti_100kv_repeat_1_517_3.raw"  # 原始投影图像的路径
-        output_postlog_path = f"./image/postlog/P{pmma_thickness}_muti_100kv_postlog_517_3.raw"  # 替换为保存 Postlog 图的路径
+    air_image_path = "./scat_raw/air/P20_muti_100kv_repeat_1_Air_520_9.raw"  # 替换为空气图像的路径
+    for pmma_thickness in range(20, 21, 10):
+        projection_image_path = f"./scat_raw/P{pmma_thickness}_muti_100kv_repeat_1_520_9.raw"  # 原始投影图像的路径
+        output_postlog_path = f"./scat_raw/P{pmma_thickness}_muti_100kv_postlog_9.raw"  # 替换为保存 Postlog 图的路径
         image_size = (300, 300)
         compute_postlog(projection_image_path, air_image_path, output_postlog_path,image_size)

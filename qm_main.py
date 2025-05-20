@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 from crip.io import imreadRaw, imwriteRaw
 from scipy.interpolate import interp1d
+import cv2
+
+pmma_thickness = 20
 
 dtype1      = np.float32          # 输出 dtype
 RAW_SHAPE   = (300, 300)          # 每张 raw 的宽高（H, W）
@@ -12,7 +15,7 @@ MM2CM       = 0.1                 # 毫米 → 厘米
 
 MATERIALS = {
     # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", r"./sgm/sgm_pmma_50mm_516_1.raw"),
+    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_516_1.raw"),
     "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , r"./sgm/sgm_fe_1mm_516.raw"),
     "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", r"./sgm/sgm_iodine_2mm_516.raw"),
     "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", r"./sgm/sgm_iodine_5mm_516.raw"),
@@ -20,8 +23,8 @@ MATERIALS = {
     "pt"  : (21.45, r"./attenuation_coefficient/pt_u.xlsx"  , r"./sgm/sgm_pt_1mm_516.raw"),
     "ba"  : ( 3.62, r"./attenuation_coefficient/ba_u.xlsx"  , r"./sgm/sgm_ba_50mm_516.raw"),
     "bone": ( 1.85, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_bone_40mm_516.raw"),
-    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , r"./sgm/sgm_co2_2mm_P50mm_516.raw"),
-    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , r"./sgm/sgm_co2_5mm_P50mm_516.raw"),
+    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_516.raw"),
+    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_516.raw"),
 }
 
 #  1. 载入能谱并插值到 1 keV
@@ -74,10 +77,86 @@ for k, E_keV in enumerate(ENERGY_GRID):
 
 # 4. 取透过率、Post-log，并写 raw
 primary  = higher / lower
-postlog  = -np.log(primary + 1e-6)
 
-out_dir = Path("./result_raw")
-out_dir.mkdir(exist_ok=True)
-imwriteRaw(primary, out_dir/"primary_multi_517_1.raw", dtype=dtype1)
-imwriteRaw(postlog, out_dir/"primary_multi_postlog_517_1.raw", dtype=dtype1)
-print("Saved:", out_dir/"primary_multi_postlog.raw", "| shape", postlog.shape)
+
+'''
+======================================
+part 2 散射信号叠加
+======================================
+'''
+
+# ── 0. 基本参数 ────────────────────────────────────────────────
+dtype1         = np.float32
+SCAT_SHAPE     = (300, 300)                     # (H, W) 本项目仅一张图,没有多余切片
+scatter_folder = r"./mcgpu/scat_raw"                  # mcgpu 图像输出目录
+scatter_prefix = "P20_muti_100kv_repeat_1_520_9"                        # 文件名,不含后缀
+USE_AIR_FLAT   = False                          # 没有 AIR-flat 就设 False(对空气图做多张合成)
+AIR_PATH     = r"./mcgpu/scat_raw/air/P20_muti_100kv_repeat_1_Air_520_9.raw"                   # air_001.raw … air_040.raw
+sigma_px       = 5                             # 高斯核
+
+# ── 1. 读散射帧（取第 3 个切片）并左旋 90° ────────────────────
+nz = 1
+H, W  =SCAT_SHAPE          # 720 × 300 × 300
+scatter   = np.zeros(SCAT_SHAPE, dtype=dtype1)
+
+for i in range(nz):
+    fname = f"{scatter_prefix}.raw"
+    path  = os.path.join(scatter_folder, fname)
+
+    # ① 读取 (H, W, 3) → 取索引 2 作为散射层
+    slice3 = imreadRaw(path, H, W, nSlice=3, dtype=dtype1)[2]
+
+    # ② 左旋 90°（逆时针）——等价于 np.rot90(slice3, 1)
+    slice3 = cv2.rotate(slice3, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    # 若不用 OpenCV，可用： slice3 = np.rot90(slice3, 1)
+
+    # ③ 可选：高斯平滑（低频化散射）
+    slice3 = cv2.GaussianBlur(slice3, (75,75), sigma_px)
+    # imwriteRaw(slice3, out_dir / f"test2.raw", dtype=dtype1)  # this code for debug
+
+    scatter = slice3
+
+# ── 2. 读 AIR-flat 并做归一化 (当空气图光子量过低时用) ──────────────────────────
+if USE_AIR_FLAT:
+    air_vol = []
+    for f in sorted(os.listdir(AIR_PATH)):
+        if f.endswith(".raw"):
+            air_vol.append(imreadRaw(os.path.join(AIR_PATH, f), H, W, nSlice=1,
+                                     dtype=dtype1).squeeze())
+    mean_air = np.mean(np.stack(air_vol), axis=0) + 1e-6      # 防除零
+    scatter /= mean_air                                       # element-wise
+    del air_vol
+else:           # 使用单张空气图来完成逻辑
+    # 1) 读取单张 air：nSlice=3 取第1个切片,即带散射
+    air_img = imreadRaw(AIR_PATH, H, W, nSlice=3,
+                        dtype=dtype1)[0]
+
+    # 2) 做同样的几何处理——左旋 90°，保持坐标对应
+    air_img = cv2.rotate(air_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    air_img = cv2.GaussianBlur(air_img, (75, 75), sigma_px)
+
+    # 3) 防除零；把散射归一化到 I/I0 量纲
+    air_img += 1e-6
+    scatter /= air_img
+
+# out_dir = Path("./proj_with_scatter")
+# out_dir.mkdir(exist_ok=True, parents=True)
+# imwriteRaw(scatter, out_dir / f"test4.raw", dtype=dtype1)  # this code for debug
+
+
+# ── 3. 合并到 primary 并做 post-log ───────────────────────────
+# primary 在前面得到
+assert primary.shape == scatter.shape, "primary / scatter 尺寸不一致！"
+
+total   = -np.log(primary + scatter + 1e-6)      # 加小常数防 log0
+postlog  = -np.log(primary + 1e-6)  # 对primary做postlog,已方便对比
+# ── 4. 输出 ────────────────────────────────────────────────────
+out_dir = Path("./proj_with_scatter")
+out_dir.mkdir(exist_ok=True, parents=True)
+
+imwriteRaw(primary, out_dir/f"P{pmma_thickness}_primary_muti_100kv_by_QM_2.raw", dtype=dtype1)
+imwriteRaw(scatter, out_dir/f"P{pmma_thickness}_scatter_muti_100kv_by_QM_2.raw", dtype=dtype1)
+imwriteRaw(total,   out_dir/f"P{pmma_thickness}_total_muti_100kv_by_QM_2.raw",   dtype=dtype1)
+imwriteRaw(postlog, out_dir/f"P{pmma_thickness}_primary_to_postlog_muti_100kv_by_QM_2.raw", dtype=dtype1)
+
+print("primary, scatter, total, primary_to_postlog 已写入", out_dir)

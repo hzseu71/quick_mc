@@ -192,5 +192,5 @@ def mainFunction(thickness_pmma):
     print(f"Done writing {vox_filename}.")
     print(f"Execution time: {execution_time} seconds\n--------\n")
 
-for pmma_thickness in range(50, 51, 10):
+for pmma_thickness in range(20, 21, 10):
     mainFunction(pmma_thickness)
