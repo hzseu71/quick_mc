@@ -9,17 +9,17 @@ from creat_co2_2mm import c_co2_2
 from create_co2_5mm import c_co2_5
 from create_pmma import c_pmma
 
-for pmma_thickness in range(10, 11, 10):
+for pmma_thickness in range(10, 401, 10):
 
-    c_iodine2(pmma_thickness)
-    c_iodine5(pmma_thickness)
-    c_fe1(pmma_thickness)
-    c_ta1(pmma_thickness)
-    c_pt1(pmma_thickness)
-    c_ba50(pmma_thickness)
-    c_bone40(pmma_thickness)
-    c_co2_2(pmma_thickness)
-    c_co2_5(pmma_thickness)
+    # c_iodine2(pmma_thickness)
+    # c_iodine5(pmma_thickness)
+    # c_fe1(pmma_thickness)
+    # c_ta1(pmma_thickness)
+    # c_pt1(pmma_thickness)
+    # c_ba50(pmma_thickness)
+    # c_bone40(pmma_thickness)
+    # c_co2_2(pmma_thickness)
+    # c_co2_5(pmma_thickness)
 
     c_pmma(pmma_thickness)
 
