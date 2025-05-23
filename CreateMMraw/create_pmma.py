@@ -23,6 +23,6 @@ def c_pmma(pmma_thickness):
     else:
         vol[z1 - 5:z1 + 5, y1 - 5:y1 + 5, 0:5] = 0
     # 写成raw
-    raw_path = Path(f"../raw/pmma2/pmma_{pmma_thickness}mm_521_1.raw")
+    raw_path = Path(f"../raw/pmma/pmma_{pmma_thickness}mm_523.raw")
     raw_path.write_bytes(vol.tobytes())
     print("Saved", raw_path, "| shape", vol.shape, "| dtype=float32")

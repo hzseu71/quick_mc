@@ -11,7 +11,8 @@ now = datetime.now()
 month = now.month
 day = now.day
 
-pmma_thickness = 200
+# pmma厚度，关联co2！
+pmma_thickness = 50
 
 # debug 用
 out_dir_test = Path("./test_raw")
@@ -41,6 +42,8 @@ MATERIALS = {
     "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_516.raw"),
     "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_516.raw"),
 }
+
+
 
 '''
 ======================================

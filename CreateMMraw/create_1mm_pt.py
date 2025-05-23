@@ -18,6 +18,6 @@ def c_pt1(pmma_thickness):
     vol[z1-5:z1+5,y1-5:y1+5,start_x:450] = 1.0
 
     # ── 输出 .raw ─────────────────────────────────────────────────
-    raw_path = Path(f"../raw/pt_1mm_516.raw")
+    raw_path = Path(f"../raw/pt_1mm_523.raw")
     raw_path.write_bytes(vol.tobytes())
     print("Saved", raw_path, "| shape", vol.shape, "| dtype=float32")

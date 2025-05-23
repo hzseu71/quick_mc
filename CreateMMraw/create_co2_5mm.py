@@ -17,6 +17,6 @@ def c_co2_5(pmma_thickness):
         vol[z1 - 5:z1 + 5, y1 - 5:y1 + 5, 400-p_center-2:400-p_center+3] = 1.0
 
     # ── 输出 .raw ─────────────────────────────────────────────────
-    raw_path = Path(f"../raw/co2_5mm_P{pmma_thickness}mm_516.raw")
+    raw_path = Path(f"../raw/co2_5mm_P{pmma_thickness}mm_523.raw")
     raw_path.write_bytes(vol.tobytes())
     print("Saved", raw_path, "| shape", vol.shape, "| dtype=float32")
