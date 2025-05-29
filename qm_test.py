@@ -11,7 +11,7 @@ now = datetime.now()
 month = now.month
 day = now.day
 
-pmma_thickness = 50
+pmma_thickness = 30
 
 # debug 用
 out_dir_test = Path("./test_raw")
@@ -48,16 +48,16 @@ code part
 
 MATERIALS = {
     # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_523.raw"),
-    "fe"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_fe_1mm_523.raw"),
-    "iodine2":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_2mm_523.raw"),
-    "iodine5":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_5mm_523.raw"),
-    "ta"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ta_1mm_523.raw"),
-    "pt"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_pt_1mm_523.raw"),
-    "ba"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ba_50mm_523.raw"),
-    "bone": ( 3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_bone_40mm_523.raw"),
-    "co2_2" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_523.raw"),
-    "co2_5" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_523.raw"),
+    # "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_final2.raw"),
+    # "fe"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_fe_1mm_523.raw"),
+    # "iodine2":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_2mm_523.raw"),
+    # "iodine5":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_5mm_523.raw"),
+    # "ta"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ta_1mm_523.raw"),
+    # "pt"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_pt_1mm_523.raw"),
+    # "ba"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ba_50mm_523.raw"),
+    "bone": ( 1.92, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_Bone_30mm_only.raw"),
+    # "co2_2" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_523.raw"),
+    # "co2_5" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_523.raw"),
 }
 
 
@@ -185,14 +185,14 @@ part 2 散射信号叠加
 # assert primary.shape == scatter.shape, "primary / scatter 尺寸不一致！"
 #
 # total   = -np.log(primary + scatter + 1e-6)      # 加小常数防 log0
-postlog  = -np.log(primary + 1e-6)  # 对primary做postlog,已方便对比
+postlog  = -np.log(primary + 1e-7)  # 对primary做postlog,已方便对比
 # ── 4. 输出 ────────────────────────────────────────────────────
 out_dir = Path("./proj_with_scatter")
 out_dir.mkdir(exist_ok=True, parents=True)
 
-imwriteRaw(primary, out_dir/f"P{pmma_thickness}_primary_muti_{ENERGY_RANGE}kv_by_QM_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(primary, out_dir/f"Bone{pmma_thickness}_primary_{month}{day}_{round_num}.raw", dtype=dtype1)
 # imwriteRaw(scatter, out_dir/f"P{pmma_thickness}_scatter_muti_{ENERGY_RANGE}kv_by_QM_1.raw", dtype=dtype1)
 # imwriteRaw(total,   out_dir/f"P{pmma_thickness}_total_muti_{ENERGY_RANGE}kv_by_QM_1.raw",   dtype=dtype1)
-imwriteRaw(postlog, out_dir/f"P{pmma_thickness}_primary_to_postlog_muti_{ENERGY_RANGE}kv_by_QM_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(postlog, out_dir/f"Bone{pmma_thickness}_primary_to_postlog_{month}{day}_{round_num}.raw", dtype=dtype1)
 
 print("primary, primary_to_postlog 已写入", out_dir)

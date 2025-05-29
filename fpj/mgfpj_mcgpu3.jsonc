@@ -9,24 +9,24 @@
     "OutputDir": "../sgm/",
   
     // all the files in the input directory, use regular expression
-//     "InputFiles": "pmma_50mm_523.raw",
+     "InputFiles": "Bone_30mm_only.raw",
     // 替换使用的文件名
 //    "InputFiles": "ba_50mm_523.raw",
-//    "InputFiles": "bone_40mm_523.raw",
+//    "InputFiles": "bone_40mm_final.raw",
 //    "InputFiles": "fe_1mm_523.raw",
 //    "InputFiles": "iodine_2mm_523.raw",
 //    "InputFiles": "iodine_5mm_523.raw",
 //    "InputFiles": "pt_1mm_523.raw",
-    "InputFiles": "ta_1mm_523.raw",
-//    "InputFiles": "co2_2mm_P50mm_523.raw",
-//    "InputFiles": "co2_5mm_P50mm_523.raw",
+//    "InputFiles": "ta_1mm_523.raw",
+//    "InputFiles": "co2_2mm_P30mm_523.raw",
+//    "InputFiles": "co2_5mm_P30mm_523.raw",
 
 
     // "InputFiles": "rec_new.raw",
     // output file name (prefix, replace)
     "OutputFilePrefix": "",
     // replace substring in input file name
-    "OutputFileReplace": [ "ta_", "sgm_ta_" ],
+    "OutputFileReplace": [ "Bone_", "sgm_Bone_" ],
     /*************************************
     Linked Input files
     ************************************/
@@ -37,7 +37,7 @@
       *********************************************************/
 
     // image dimension (integer)
-    "ImageDimension": 450,
+    "ImageDimension": 100,
     /* pixel size or image size, just use one of them */
     // image pixel size [mm]
     // "PixelSize": 0.84,
@@ -45,7 +45,7 @@
     // image size [mm]
     //"ImageSize": 200,
     // number of slices in each image file
-    "ImageDimensionZ": 450,
+    "ImageDimensionZ": 100,
     // "VoxelHeight": 0.84,
     "VoxelHeight": 1,
     // (OPTIONAL) Whether the cone beam recon is needed
@@ -56,9 +56,9 @@
       *********************************************************/
 
     // source to isocenter distance [mm]
-    "SourceIsocenterDistance": 500,
+    "SourceIsocenterDistance": 200,
     // source to detector distance [mm]
-    "SourceDetectorDistance": 1000,
+    "SourceDetectorDistance": 800,
     // start angle (positive counterclockwise) [degree]
     "StartAngle": 0,
     // number of detector elements
@@ -83,7 +83,7 @@
     // oversample sinogram by increasing the number of detector elements by the factor of number below
     "OversampleSize": 1,
     // accelerate projection by increasing the number of step size below
-    "ForwardProjectionStepSize": 0.005,  // Mandoct ver1.3 new feature!!!
+    "ForwardProjectionStepSize": 0.001,  // Mandoct ver1.3 new feature!!!
     "OutputFileForm": "post_log_images",
     // start angle (positive counterclockwise) [degree]
     "ImageRotation": 0

@@ -20,7 +20,7 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
 
     # 只处理第一个切片
     I = I[0]
-    I0 = I0[1]
+    I0 = I0[0]
 
     # 避免除以零
     epsilon = 1e-10  # 防止数值错误
@@ -40,9 +40,9 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
 
 # 示例用法
 if __name__ == "__main__":
-    air_image_path = "./scat_raw/air/P30_mini_Air_521_11.raw"  # 替换为空气图像的路径
-    for pmma_thickness in range(1, 2, 1):
-        projection_image_path = f"./scat_raw/P30_mini_521_13_000{pmma_thickness}.raw"  # 原始投影图像的路径
-        output_postlog_path = f"./scat_raw/postlog/P30_postlog_mini_000{pmma_thickness}.raw"  # 替换为保存 Postlog 图的路径
+    air_image_path = "./scat_raw/air/Bone30_bone_Air_529_1.raw"  # 替换为空气图像的路径
+    for pmma_thickness in range(30, 31, 10):
+        projection_image_path = f"./scat_raw/Bone{pmma_thickness}_bone_529_1.raw"  # 原始投影图像的路径
+        output_postlog_path = f"./scat_raw/postlog/Bone{pmma_thickness}_bone_postlog_529_1.raw"  # 替换为保存 Postlog 图的路径
         image_size = (300, 300)
         compute_postlog(projection_image_path, air_image_path, output_postlog_path,image_size)

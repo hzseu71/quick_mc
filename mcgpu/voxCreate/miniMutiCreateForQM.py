@@ -3,6 +3,7 @@ import time
 import numpy as np
 """
 改为 20*20（10cm*10cm的小体积模体，并将附加材料改小）
+Y 是厚度
 """
 VoxSizeX = 100
 VoxSizeZ = 100
