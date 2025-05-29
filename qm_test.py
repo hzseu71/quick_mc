@@ -94,18 +94,26 @@ for name, (rho, mu_xlsx, raw_path) in MATERIALS.items():
 
 print("Loaded materials:", list(MATERIALS))
 
+TARGET_FACTOR = 0.97        # mgfpj primary ×0.97 → mcgpu
+BONE_THICK_REF = 3.0        # ← 测 0.97 时那张纯骨像素的厚度(cm)
+ln_factor = -np.log(TARGET_FACTOR)          # >0
+delta_mu = ln_factor / BONE_THICK_REF       # 标量 (cm-1)
+
+# delta_mu_E = delta_mu * energy_weight[k] ...
 
 # 3. 计算 lower 与 higher
 
 lower  = np.sum(spec_w * spec_e)             # 入射总能量 (标量),用numpy来加速积分过程
 higher = np.zeros(RAW_SHAPE, dtype=np.float32)
 for k, E_keV in enumerate(ENERGY_GRID):
-    # 3-1 先算总线性衰减 μ·d (H×W)
     mu_t = np.zeros(RAW_SHAPE, dtype=np.float32)
+
     for name, (rho, _, _) in MATERIALS.items():
-        mu   = mu_dict[name][k]              # 此能量点的 μ/ρ
-        thick= thick_dict[name]              # mm
-        mu_t += mu * rho * thick * MM2CM     # μ/ρ × ρ × t(cm)
+        mu = mu_dict[name][k]            # (μ/ρ)_E
+        thick = thick_dict[name]         # mm
+        if name == "bone":
+            mu += delta_mu / rho         # ← 只给骨加 Δμ/ρ
+        mu_t += mu * rho * thick * MM2CM
     # 3-2 能量加权累加
     higher += spec_w[k] * spec_e[k] * np.exp(-mu_t)
 
