@@ -9,24 +9,24 @@
     "OutputDir": "../sgm/",
   
     // all the files in the input directory, use regular expression
-     "InputFiles": "Bone_30mm_only.raw",
+//     "InputFiles": "pmma_30mm_530.raw",
     // 替换使用的文件名
-//    "InputFiles": "ba_50mm_523.raw",
-//    "InputFiles": "bone_40mm_final.raw",
-//    "InputFiles": "fe_1mm_523.raw",
-//    "InputFiles": "iodine_2mm_523.raw",
-//    "InputFiles": "iodine_5mm_523.raw",
-//    "InputFiles": "pt_1mm_523.raw",
-//    "InputFiles": "ta_1mm_523.raw",
-//    "InputFiles": "co2_2mm_P30mm_523.raw",
-//    "InputFiles": "co2_5mm_P30mm_523.raw",
+    "InputFiles": "ba_50mm_530.raw",
+//    "InputFiles": "bone_40mm_530.raw",
+//    "InputFiles": "fe_1mm_530.raw",
+//    "InputFiles": "iodine_2mm_530.raw",
+//    "InputFiles": "iodine_5mm_530.raw",
+//    "InputFiles": "pt_1mm_530.raw",
+//    "InputFiles": "ta_1mm_530.raw",
+//    "InputFiles": "co2_2mm_P30mm_530.raw",
+//    "InputFiles": "co2_5mm_P30mm_530.raw",
 
 
     // "InputFiles": "rec_new.raw",
     // output file name (prefix, replace)
     "OutputFilePrefix": "",
     // replace substring in input file name
-    "OutputFileReplace": [ "Bone_", "sgm_Bone_" ],
+    "OutputFileReplace": [ "ba_", "sgm_ba_" ],
     /*************************************
     Linked Input files
     ************************************/
@@ -37,7 +37,7 @@
       *********************************************************/
 
     // image dimension (integer)
-    "ImageDimension": 100,
+    "ImageDimension": 450,
     /* pixel size or image size, just use one of them */
     // image pixel size [mm]
     // "PixelSize": 0.84,
@@ -45,7 +45,7 @@
     // image size [mm]
     //"ImageSize": 200,
     // number of slices in each image file
-    "ImageDimensionZ": 100,
+    "ImageDimensionZ": 450,
     // "VoxelHeight": 0.84,
     "VoxelHeight": 1,
     // (OPTIONAL) Whether the cone beam recon is needed
@@ -56,7 +56,7 @@
       *********************************************************/
 
     // source to isocenter distance [mm]
-    "SourceIsocenterDistance": 200,
+    "SourceIsocenterDistance": 450,
     // source to detector distance [mm]
     "SourceDetectorDistance": 800,
     // start angle (positive counterclockwise) [degree]

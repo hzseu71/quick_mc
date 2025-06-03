@@ -1,0 +1,30 @@
+{
+  "InputDir": "../raw/",
+  "OutputDir": "../sgm/",
+  "InputFiles": "co2_5mm_P30mm_530.raw",
+  "OutputFilePrefix": "",
+  "OutputFileReplace": [
+    "co2_",
+    "sgm_co2_"
+  ],
+  "ImageDimension": 450,
+  "PixelSize": 1,
+  "ImageDimensionZ": 450,
+  "VoxelHeight": 1,
+  "ConeBeam": true,
+  "SourceIsocenterDistance": 450,
+  "SourceDetectorDistance": 800,
+  "StartAngle": 0,
+  "DetectorElementCountHorizontal": 300,
+  "Views": 1,
+  "TotalScanAngle": 360,
+  "DetectorElementCountVertical": 300,
+  "DetectorElementWidth": 1,
+  "DetectorOffsetHorizontal": 0,
+  "DetectorOffsetVertical": 0,
+  "DetectorElementHeight": 1,
+  "OversampleSize": 1,
+  "ForwardProjectionStepSize": 0.001,
+  "OutputFileForm": "post_log_images",
+  "ImageRotation": 0
+}
