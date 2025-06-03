@@ -25,27 +25,29 @@ thickness_co2_5 = 5
 
 # 定义材料密度
 density_air = 0.00120479  # 空气
-density_pmma = 1.18  # PMMA
-
+density_pmma = 0.00120479  # PMMA
+density_iodine = 0.35  # 碘块 (350 mg/mL)
 density_fe = 7.874  # 铁
-
-
-
+density_ta = 16.65  # 钽
+density_pt = 21.45  # 铂
+density_ba = 2  # 钡
 density_bone = 1.92  # 骨骼
-
+density_co2 = 0.001977  # CO₂
 
 # 定义材料 ID
 AirID = 1
-PMMAID = 2
-
-FeID = 3 # (用钢代替)
-
-BoneID = 4
-
+PMMAID = 1
+IodineID = 3
+FeID = 4 # (用钢代替)
+TaID = 5 # （用w代替 73->74）
+PtID = 6 # (用钨替代 78->74)
+BaID = 7 # （用碘化铯代替 csl）
+BoneID = 8
+CO2ID = 9 # （用空气）
 
 # 输出文件夹（如果不存在）
-# output_dir = "/mnt/no2/huzhen/vox/miniMM"
 output_dir = "./"
+# output_dir = "/Users/huzhen/Downloads"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
@@ -59,21 +61,21 @@ def mainFunction(thickness_pmma):
     pmma_start_y = 50
     pmma_end_y = 50 + thickness_pmma
 
-    # # 设置碘2mm区域
-    # iodine_2_x = 75
-    # iodine_2_z = 50
-    # for y in range(0, thickness_iodine_2):
-    #     for x in range(iodine_2_x-length_half, iodine_2_x + length_half):
-    #         for z in range(iodine_2_z-length_half, iodine_2_z + length_half):
-    #             mat_id[x, y, z] = IodineID
-    #
-    # # 设置碘5mm区域
-    # iodine_5_x = 72
-    # iodine_5_z = 66
-    # for y in range(0, thickness_iodine_5):
-    #     for x in range(iodine_5_x - length_half, iodine_5_x + length_half):
-    #         for z in range(iodine_5_z - length_half, iodine_5_z + length_half):
-    #             mat_id[x, y, z] = IodineID
+    # 设置碘2mm区域
+    iodine_2_x = 75
+    iodine_2_z = 50
+    for y in range(0, thickness_iodine_2):
+        for x in range(iodine_2_x-length_half, iodine_2_x + length_half):
+            for z in range(iodine_2_z-length_half, iodine_2_z + length_half):
+                mat_id[x, y, z] = IodineID
+
+    # 设置碘5mm区域
+    iodine_5_x = 72
+    iodine_5_z = 66
+    for y in range(0, thickness_iodine_5):
+        for x in range(iodine_5_x - length_half, iodine_5_x + length_half):
+            for z in range(iodine_5_z - length_half, iodine_5_z + length_half):
+                mat_id[x, y, z] = IodineID
 
     # 设置Fe区域
     fe_x = 68
@@ -83,29 +85,29 @@ def mainFunction(thickness_pmma):
             for z in range(fe_z - length_half, fe_z + length_half):
                 mat_id[x, y, z] = FeID
 
-    # # 设置Ta区域
-    # ta_x = 50
-    # ta_z = 80
-    # for y in range(0, thickness_ta):
-    #     for x in range(ta_x - length_half, ta_x + length_half):
-    #         for z in range(ta_z - length_half, ta_z + length_half):
-    #             mat_id[x, y, z] = TaID
-    #
-    # # 设置Pt区域
-    # pt_x = 53
-    # pt_z = 25
-    # for y in range(0, thickness_pt):
-    #     for x in range(pt_x - length_half, pt_x + length_half):
-    #         for z in range(pt_z - length_half, pt_z + length_half):
-    #             mat_id[x, y, z] = PtID
-    #
-    # # 设置Ba区域
-    # ba_x = 28
-    # ba_z = 66
-    # for y in range(0, thickness_ba):
-    #     for x in range(ba_x - length_half, ba_x + length_half):
-    #         for z in range(ba_z - length_half, ba_z + length_half):
-    #             mat_id[x, y, z] = BaID
+    # 设置Ta区域
+    ta_x = 50
+    ta_z = 80
+    for y in range(0, thickness_ta):
+        for x in range(ta_x - length_half, ta_x + length_half):
+            for z in range(ta_z - length_half, ta_z + length_half):
+                mat_id[x, y, z] = TaID
+
+    # 设置Pt区域
+    pt_x = 53
+    pt_z = 25
+    for y in range(0, thickness_pt):
+        for x in range(pt_x - length_half, pt_x + length_half):
+            for z in range(pt_z - length_half, pt_z + length_half):
+                mat_id[x, y, z] = PtID
+
+    # 设置Ba区域
+    ba_x = 28
+    ba_z = 66
+    for y in range(0, thickness_ba):
+        for x in range(ba_x - length_half, ba_x + length_half):
+            for z in range(ba_z - length_half, ba_z + length_half):
+                mat_id[x, y, z] = BaID
 
     # 设置Bone区域
     bone_x = 25
@@ -118,26 +120,26 @@ def mainFunction(thickness_pmma):
 
     # 设置PMMA区域,整个纵截面
     mat_id[:, pmma_start_y:pmma_end_y, :] = PMMAID
-    # if(VoxSizeY >=60):
-    #     # 设置Co2 2mm区域，需要嵌在内部
-    #     co22_x = 28
-    #     co22_z = 34
-    #     startY = pmma_start_y+(thickness_pmma//2)-1
-    #     endY = startY+ thickness_co2_2
-    #     for y in range(startY, endY):
-    #         for x in range(co22_x - length_half, co22_x + length_half):
-    #             for z in range(co22_z - length_half, co22_z + length_half):
-    #                 mat_id[x, y, z] = CO2ID
-    #
-    #     # 设置Co2 5mm区域 嵌在内部
-    #     co25_x = 37
-    #     co25_z = 20
-    #     startY -= 1
-    #     endY = startY + thickness_co2_5
-    #     for y in range(startY, endY):
-    #         for x in range(co25_x - length_half, co25_x + length_half):
-    #             for z in range(co25_z - length_half, co25_z + length_half):
-    #                 mat_id[x, y, z] = CO2ID
+    if(VoxSizeY >=60):
+        # 设置Co2 2mm区域，需要嵌在内部
+        co22_x = 28
+        co22_z = 34
+        startY = pmma_start_y+(thickness_pmma//2)-1
+        endY = startY+ thickness_co2_2
+        for y in range(startY, endY):
+            for x in range(co22_x - length_half, co22_x + length_half):
+                for z in range(co22_z - length_half, co22_z + length_half):
+                    mat_id[x, y, z] = CO2ID
+
+        # 设置Co2 5mm区域 嵌在内部
+        co25_x = 37
+        co25_z = 20
+        startY -= 1
+        endY = startY + thickness_co2_5
+        for y in range(startY, endY):
+            for x in range(co25_x - length_half, co25_x + length_half):
+                for z in range(co25_z - length_half, co25_z + length_half):
+                    mat_id[x, y, z] = CO2ID
 
     # 生成 .vox 文件
     #    - 文件头：维度 & 体素尺寸 & 列信息
@@ -158,8 +160,13 @@ def mainFunction(thickness_pmma):
         None,  # 占位 (ID=0 不用)
         str(density_air),  # ID=1 => 空气
         str(density_pmma),  # ID=2 => PMMA
+        str(density_iodine),  # ID=3 => 碘块
         str(density_fe),  # ID=4 => 铁
+        str(density_ta),  # ID=5 => 钽
+        str(density_pt),  # ID=6 => 铂
+        str(density_ba),  # ID=7 => 钡
         str(density_bone),  # ID=8 => 骨骼
+        str(density_co2)  # ID=9 => CO₂
     ]
 
     # 预转换数据为列表（更高效）
@@ -176,7 +183,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Bone_Fe_QM_529_1.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_530.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 
