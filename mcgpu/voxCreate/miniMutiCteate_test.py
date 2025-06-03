@@ -26,18 +26,20 @@ thickness_co2_5 = 5
 # 定义材料密度
 density_air = 0.00120479  # 空气
 density_pmma = 0.00120479  # PMMA
-density_iodine = 0.35  # 碘块 (350 mg/mL)
-density_fe = 7.874  # 铁
-density_ta = 16.65  # 钽
-density_pt = 21.45  # 铂
-density_ba = 2  # 钡
-density_bone = 1.92  # 骨骼
-density_co2 = 0.001977  # CO₂
+density_iodine5 = 0.35*33.59*1.07  # 碘块 (350 mg/mL)
+density_iodine2 = 0.35*33.59*0.985  # 碘块 (350 mg/mL)
+density_fe = 7.874*0.523  # 铁
+density_ta = 16.65*0.528 # 钽
+density_pt = 21.45*0.475  # 铂
+density_ba = 2*0.334  # 钡
+density_bone = 1.92*1.031  # 骨骼
+density_co2 = 0.001977*4500  # CO₂
 
 # 定义材料 ID
 AirID = 1
 PMMAID = 1
-IodineID = 3
+Iodine5ID = 3
+Iodine2ID = 3
 FeID = 4 # (用钢代替)
 TaID = 5 # （用w代替 73->74）
 PtID = 6 # (用钨替代 78->74)
@@ -67,7 +69,7 @@ def mainFunction(thickness_pmma):
     for y in range(0, thickness_iodine_2):
         for x in range(iodine_2_x-length_half, iodine_2_x + length_half):
             for z in range(iodine_2_z-length_half, iodine_2_z + length_half):
-                mat_id[x, y, z] = IodineID
+                mat_id[x, y, z] = Iodine2ID
 
     # 设置碘5mm区域
     iodine_5_x = 72
@@ -75,7 +77,7 @@ def mainFunction(thickness_pmma):
     for y in range(0, thickness_iodine_5):
         for x in range(iodine_5_x - length_half, iodine_5_x + length_half):
             for z in range(iodine_5_z - length_half, iodine_5_z + length_half):
-                mat_id[x, y, z] = IodineID
+                mat_id[x, y, z] = Iodine5ID
 
     # 设置Fe区域
     fe_x = 68
@@ -160,7 +162,7 @@ def mainFunction(thickness_pmma):
         None,  # 占位 (ID=0 不用)
         str(density_air),  # ID=1 => 空气
         str(density_pmma),  # ID=2 => PMMA
-        str(density_iodine),  # ID=3 => 碘块
+        str(density_iodine5),  # ID=3 => 碘块
         str(density_fe),  # ID=4 => 铁
         str(density_ta),  # ID=5 => 钽
         str(density_pt),  # ID=6 => 铂
@@ -183,7 +185,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_530.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_607.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 

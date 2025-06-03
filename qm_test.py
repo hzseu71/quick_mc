@@ -12,7 +12,7 @@ month = now.month
 day = now.day
 
 # pmma厚度，关联co2！
-pmma_thickness = 50
+pmma_thickness = 30
 
 # debug 用
 out_dir_test = Path("./test_raw")
