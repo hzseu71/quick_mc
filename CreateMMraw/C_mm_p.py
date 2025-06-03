@@ -11,15 +11,15 @@ from create_pmma import c_pmma
 
 for pmma_thickness in range(30, 31, 10):
 
-    # c_iodine2(pmma_thickness)
-    # c_iodine5(pmma_thickness)
-    # c_fe1(pmma_thickness)
-    # c_ta1(pmma_thickness)
-    # c_pt1(pmma_thickness)
-    # c_ba50(pmma_thickness)
-    # c_bone40(pmma_thickness)
-    # c_co2_2(pmma_thickness)
-    # c_co2_5(pmma_thickness)
+    c_iodine2(pmma_thickness)
+    c_iodine5(pmma_thickness)
+    c_fe1(pmma_thickness)
+    c_ta1(pmma_thickness)
+    c_pt1(pmma_thickness)
+    c_ba50(pmma_thickness)
+    c_bone40(pmma_thickness)
+    c_co2_2(pmma_thickness)
+    c_co2_5(pmma_thickness)
 
     c_pmma(pmma_thickness)
 

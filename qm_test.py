@@ -27,7 +27,20 @@ ENERGY_GRID = np.arange(8, 101)  # keV，8–100 共 93 点,蒙卡最低要求8k
 MM2CM       = 0.1                 # 毫米 → 厘米
 ENERGY_RANGE = 100
 spectrum_file = 'spectrum100_Copper0.1mm.txt'
-
+SCAN_SUFFIX = "530"
+MATERIALS = {
+    # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
+    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , fr"./sgm/sgm_fe_1mm_{SCAN_SUFFIX}.raw"),
+    "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_2mm_{SCAN_SUFFIX}.raw"),
+    "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_5mm_{SCAN_SUFFIX}.raw"),
+    "ta"  : (16.69, r"./attenuation_coefficient/ta_u.xlsx"  , fr"./sgm/sgm_ta_1mm_{SCAN_SUFFIX}.raw"),
+    "pt"  : (21.45, r"./attenuation_coefficient/pt_u.xlsx"  , fr"./sgm/sgm_pt_1mm_{SCAN_SUFFIX}.raw"),
+    "ba"  : ( 3.62, r"./attenuation_coefficient/ba_u.xlsx"  , fr"./sgm/sgm_ba_50mm_{SCAN_SUFFIX}.raw"),
+    "bone": ( 1.85, r"./attenuation_coefficient/bone_u.xlsx", fr"./sgm/sgm_bone_40mm_{SCAN_SUFFIX}.raw"),
+    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+}
 
 '''
 ======================================
@@ -45,20 +58,6 @@ file_remarks = f'by_QM_{month}{day}_{round_num}'
 code part
 ======================================
 '''
-
-MATERIALS = {
-    # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    # "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_final2.raw"),
-    # "fe"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_fe_1mm_523.raw"),
-    # "iodine2":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_2mm_523.raw"),
-    # "iodine5":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_5mm_523.raw"),
-    # "ta"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ta_1mm_523.raw"),
-    # "pt"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_pt_1mm_523.raw"),
-    # "ba"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ba_50mm_523.raw"),
-    "bone": ( 1.92, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_Bone_30mm_only.raw"),
-    # "co2_2" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_523.raw"),
-    # "co2_5" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_523.raw"),
-}
 
 
 #  1. 载入能谱并插值到 1 keV
@@ -103,7 +102,7 @@ delta_mu = ln_factor / BONE_THICK_REF       # 标量 (cm-1)
 
 # 3. 计算 lower 与 higher
 
-lower  = np.sum(spec_w * spec_e)             # 入射总能量 (标量),用numpy来加速积分过程
+lower  = np.sum(spec_w * spec_e)             # numpy来加速过程
 higher = np.zeros(RAW_SHAPE, dtype=np.float32)
 for k, E_keV in enumerate(ENERGY_GRID):
     mu_t = np.zeros(RAW_SHAPE, dtype=np.float32)
@@ -112,7 +111,7 @@ for k, E_keV in enumerate(ENERGY_GRID):
         mu = mu_dict[name][k]            # (μ/ρ)_E
         thick = thick_dict[name]         # mm
         if name == "bone":
-            mu += delta_mu / rho         # ← 只给骨加 Δμ/ρ
+            mu -= delta_mu / rho         # ← 只给骨加 Δμ/ρ
         mu_t += mu * rho * thick * MM2CM
     # 3-2 能量加权累加
     higher += spec_w[k] * spec_e[k] * np.exp(-mu_t)
@@ -120,7 +119,6 @@ for k, E_keV in enumerate(ENERGY_GRID):
 
 # 4. 取透过率、Post-log，并写 raw
 primary  = higher / lower
-
 
 '''
 ======================================
@@ -198,9 +196,9 @@ postlog  = -np.log(primary + 1e-7)  # 对primary做postlog,已方便对比
 out_dir = Path("./proj_with_scatter")
 out_dir.mkdir(exist_ok=True, parents=True)
 
-imwriteRaw(primary, out_dir/f"Bone{pmma_thickness}_primary_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(primary, out_dir/f"P{pmma_thickness}_primary_Muti_{month}{day}_{round_num}.raw", dtype=dtype1)
 # imwriteRaw(scatter, out_dir/f"P{pmma_thickness}_scatter_muti_{ENERGY_RANGE}kv_by_QM_1.raw", dtype=dtype1)
 # imwriteRaw(total,   out_dir/f"P{pmma_thickness}_total_muti_{ENERGY_RANGE}kv_by_QM_1.raw",   dtype=dtype1)
-imwriteRaw(postlog, out_dir/f"Bone{pmma_thickness}_primary_to_postlog_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(postlog, out_dir/f"P{pmma_thickness}_primary_to_postlog_Muti_{month}{day}_{round_num}.raw", dtype=dtype1)
 
 print("primary, primary_to_postlog 已写入", out_dir)

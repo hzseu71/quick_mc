@@ -46,7 +46,7 @@ BoneID = 8
 CO2ID = 9 # （用空气）
 
 # 输出文件夹（如果不存在）
-output_dir = "/mnt/no2/huzhen/vox/miniMM"
+output_dir = "./"
 # output_dir = "/Users/huzhen/Downloads"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -183,7 +183,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QK.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_530.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 
@@ -193,5 +193,5 @@ def mainFunction(thickness_pmma):
     print(f"Done writing {vox_filename}.")
     print(f"Execution time: {execution_time} seconds\n--------\n")
 
-for pmma_thickness in range(20, 21, 10):
+for pmma_thickness in range(30, 31, 10):
     mainFunction(pmma_thickness)

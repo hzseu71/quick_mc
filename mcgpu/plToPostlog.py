@@ -19,8 +19,8 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
     I0 = np.fromfile(air_path, dtype=np.float32).reshape((num_slices, *image_size))
 
     # 只处理第一个切片
-    I = I[0]
-    I0 = I0[0]
+    I = I[1]
+    I0 = I0[1]
 
     # 避免除以零
     epsilon = 1e-10  # 防止数值错误
@@ -42,7 +42,7 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
 if __name__ == "__main__":
     air_image_path = "./scat_raw/air/Bone30_bone_Air_529_1.raw"  # 替换为空气图像的路径
     for pmma_thickness in range(30, 31, 10):
-        projection_image_path = f"./scat_raw/Bone{pmma_thickness}_bone_529_1.raw"  # 原始投影图像的路径
-        output_postlog_path = f"./scat_raw/postlog/Bone{pmma_thickness}_bone_postlog_529_1.raw"  # 替换为保存 Postlog 图的路径
+        projection_image_path = f"./scat_raw/P{pmma_thickness}_muti_100kv_repeat_1_muti_530_1.raw"  # 原始投影图像的路径
+        output_postlog_path = f"./scat_raw/postlog/P{pmma_thickness}_postlog_muti_100kv_repeat_1_muti_530_1.raw"  # 替换为保存 Postlog 图的路径
         image_size = (300, 300)
         compute_postlog(projection_image_path, air_image_path, output_postlog_path,image_size)

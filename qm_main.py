@@ -28,19 +28,19 @@ ENERGY_GRID = np.arange(8, 101)  # keV，8–100 共 93 点,蒙卡最低要求8k
 MM2CM       = 0.1                 # 毫米 → 厘米
 ENERGY_RANGE = 100
 spectrum_file = 'spectrum100_Copper0.1mm.txt'
-
+SCAN_SUFFIX = "530"
 MATERIALS = {
     # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_wide_{pmma_thickness}mm_521_1.raw"),
-    "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , r"./sgm/sgm_fe_1mm_516.raw"),
-    "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", r"./sgm/sgm_iodine_2mm_516.raw"),
-    "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", r"./sgm/sgm_iodine_5mm_516.raw"),
-    "ta"  : (16.69, r"./attenuation_coefficient/ta_u.xlsx"  , r"./sgm/sgm_ta_1mm_516.raw"),
-    "pt"  : (21.45, r"./attenuation_coefficient/pt_u.xlsx"  , r"./sgm/sgm_pt_1mm_516.raw"),
-    "ba"  : ( 3.62, r"./attenuation_coefficient/ba_u.xlsx"  , r"./sgm/sgm_ba_50mm_516.raw"),
-    "bone": ( 1.85, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_bone_40mm_516.raw"),
-    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_516.raw"),
-    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_516.raw"),
+    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , fr"./sgm/sgm_fe_1mm_{SCAN_SUFFIX}.raw"),
+    "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_2mm_{SCAN_SUFFIX}.raw"),
+    "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_5mm_{SCAN_SUFFIX}.raw"),
+    "ta"  : (16.69, r"./attenuation_coefficient/ta_u.xlsx"  , fr"./sgm/sgm_ta_1mm_{SCAN_SUFFIX}.raw"),
+    "pt"  : (21.45, r"./attenuation_coefficient/pt_u.xlsx"  , fr"./sgm/sgm_pt_1mm_{SCAN_SUFFIX}.raw"),
+    "ba"  : ( 3.62, r"./attenuation_coefficient/ba_u.xlsx"  , fr"./sgm/sgm_ba_50mm_{SCAN_SUFFIX}.raw"),
+    "bone": ( 1.85, r"./attenuation_coefficient/bone_u.xlsx", fr"./sgm/sgm_bone_40mm_{SCAN_SUFFIX}.raw"),
+    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
 }
 
 
