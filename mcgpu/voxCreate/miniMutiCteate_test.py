@@ -31,7 +31,7 @@ density_iodine2 = 0.35*33.59*0.985  # 碘块 (350 mg/mL)
 density_fe = 7.874*0.523  # 铁
 density_ta = 16.65*0.528 # 钽
 density_pt = 21.45*0.475  # 铂
-density_ba = 2*0.334  # 钡
+density_ba = 2*0.334*0.735  # 钡
 density_bone = 1.92*1.031  # 骨骼
 density_co2 = 0.001977*4500  # CO₂
 
@@ -39,13 +39,13 @@ density_co2 = 0.001977*4500  # CO₂
 AirID = 1
 PMMAID = 1
 Iodine5ID = 3
-Iodine2ID = 3
 FeID = 4 # (用钢代替)
 TaID = 5 # （用w代替 73->74）
 PtID = 6 # (用钨替代 78->74)
 BaID = 7 # （用碘化铯代替 csl）
 BoneID = 8
 CO2ID = 9 # （用空气）
+Iodine2ID = 10
 
 # 输出文件夹（如果不存在）
 output_dir = "./"
@@ -168,7 +168,8 @@ def mainFunction(thickness_pmma):
         str(density_pt),  # ID=6 => 铂
         str(density_ba),  # ID=7 => 钡
         str(density_bone),  # ID=8 => 骨骼
-        str(density_co2)  # ID=9 => CO₂
+        str(density_co2),  # ID=9 => CO₂
+        str(density_iodine2)
     ]
 
     # 预转换数据为列表（更高效）
@@ -185,7 +186,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_607.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_608.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 
