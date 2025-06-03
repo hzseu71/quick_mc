@@ -11,7 +11,8 @@ now = datetime.now()
 month = now.month
 day = now.day
 
-pmma_thickness = 30
+# pmma厚度，关联co2！
+pmma_thickness = 50
 
 # debug 用
 out_dir_test = Path("./test_raw")
@@ -21,12 +22,28 @@ out_dir_test.mkdir(exist_ok=True, parents=True)
 Part1 部分需要更改的配置
 ======================================
 '''
+round_num = 1
 dtype1      = np.float32          # 输出 dtype
 RAW_SHAPE   = (300, 300)          # 每张 raw 的宽高（H, W）
 ENERGY_GRID = np.arange(8, 101)  # keV，8–100 共 93 点,蒙卡最低要求8kev
 MM2CM       = 0.1                 # 毫米 → 厘米
 ENERGY_RANGE = 100
 spectrum_file = 'spectrum100_Copper0.1mm.txt'
+SCAN_SUFFIX = "530"
+MATERIALS = {
+    # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
+    # "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , fr"./sgm/sgm_fe_1mm_{SCAN_SUFFIX}.raw"),
+    "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_2mm_{SCAN_SUFFIX}.raw"),
+    "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_5mm_{SCAN_SUFFIX}.raw"),
+    "ta"  : (16.69, r"./attenuation_coefficient/ta_u.xlsx"  , fr"./sgm/sgm_ta_1mm_{SCAN_SUFFIX}.raw"),
+    "pt"  : (21.45, r"./attenuation_coefficient/pt_u.xlsx"  , fr"./sgm/sgm_pt_1mm_{SCAN_SUFFIX}.raw"),
+    "ba"  : ( 3.62, r"./attenuation_coefficient/ba_u.xlsx"  , fr"./sgm/sgm_ba_50mm_{SCAN_SUFFIX}.raw"),
+    "bone": ( 1.85, r"./attenuation_coefficient/bone_u.xlsx", fr"./sgm/sgm_bone_40mm_{SCAN_SUFFIX}.raw"),
+    "co2_2" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "co2_5" : ( 8.90, r"./attenuation_coefficient/co2_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+}
+
 
 
 '''
@@ -37,28 +54,9 @@ Part2 部分需要更改的配置
 scatter_folder = r"./mcgpu/scat_raw"                  # mcgpu 图像输出目录
 scatter_prefix = f"P{pmma_thickness}_muti_100kv_repeat_1_521_1"    # mcgpu模拟图像
 AIR_PATH     = fr"./mcgpu/scat_raw/air/P{pmma_thickness}_muti_100kv_repeat_1_Air_521_1.raw"                   # 空气图像
-round_num = 1
+
 file_remarks = f'by_QM_{month}{day}_{round_num}'
 
-
-'''
-code part
-======================================
-'''
-
-MATERIALS = {
-    # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    # "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_final2.raw"),
-    # "fe"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_fe_1mm_523.raw"),
-    # "iodine2":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_2mm_523.raw"),
-    # "iodine5":(3, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_iodine_5mm_523.raw"),
-    # "ta"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ta_1mm_523.raw"),
-    # "pt"  : (3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_pt_1mm_523.raw"),
-    # "ba"  : ( 3, r"./attenuation_coefficient/bone_u.xlsx"  , r"./sgm/sgm_ba_50mm_523.raw"),
-    "bone": ( 1.92, r"./attenuation_coefficient/bone_u.xlsx", r"./sgm/sgm_Bone_30mm_only.raw"),
-    # "co2_2" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_2mm_P{pmma_thickness}mm_523.raw"),
-    # "co2_5" : ( 3, r"./attenuation_coefficient/bone_u.xlsx" , fr"./sgm/sgm_co2_5mm_P{pmma_thickness}mm_523.raw"),
-}
 
 
 #  1. 载入能谱并插值到 1 keV
@@ -114,6 +112,7 @@ for k, E_keV in enumerate(ENERGY_GRID):
         if name == "bone":
             mu += delta_mu / rho         # ← 只给骨加 Δμ/ρ
         mu_t += mu * rho * thick * MM2CM
+
     # 3-2 能量加权累加
     higher += spec_w[k] * spec_e[k] * np.exp(-mu_t)
 
@@ -121,14 +120,86 @@ for k, E_keV in enumerate(ENERGY_GRID):
 # 4. 取透过率、Post-log，并写 raw
 primary  = higher / lower
 
-postlog  = -np.log(primary + 1e-7)  # 对primary做postlog,已方便对比
+
+'''
+======================================
+part 2 散射信号叠加
+======================================
+'''
+#
+# # ── 0. 基本参数 ────────────────────────────────────────────────
+# dtype1         = np.float32
+# SCAT_SHAPE     = (300, 300)                     # (H, W) 本项目仅一张图,没有多余切片
+# USE_AIR_FLAT   = False                          # 没有 AIR-flat 就设 False(对空气图做多张合成)
+# sigma_px       = 5                             # 高斯核
+#
+# # ── 1. 读散射帧（取第 3 个切片）并左旋 90° ────────────────────
+# nz = 1
+# H, W  =SCAT_SHAPE          # 720 × 300 × 300
+# scatter   = np.zeros(SCAT_SHAPE, dtype=dtype1)
+#
+# for i in range(nz):
+#     fname = f"{scatter_prefix}.raw"
+#     path  = os.path.join(scatter_folder, fname)
+#
+#     # ① 读取 (H, W, 3) → 取索引 2 作为散射层
+#     slice3 = imreadRaw(path, H, W, nSlice=3, dtype=dtype1)[2]
+#
+#     # ② 左旋 90°（逆时针）——等价于 np.rot90(slice3, 1)
+#     slice3 = cv2.rotate(slice3, cv2.ROTATE_90_COUNTERCLOCKWISE)
+#     # 若不用 OpenCV，可用： slice3 = np.rot90(slice3, 1)
+#     imwriteRaw(slice3, out_dir_test / f"scatter_noGB_test.raw", dtype=dtype1)  # this code for debug
+#     # ③ 可选：高斯平滑（低频化散射）
+#     slice3 = cv2.GaussianBlur(slice3, (75,75), sigma_px)
+#     imwriteRaw(slice3, out_dir_test / f"scatter_GB_test.raw", dtype=dtype1)  # this code for debug
+#
+#
+#     scatter = slice3
+#
+# # ── 2. 读 AIR-flat 并做归一化 (当空气图光子量过低时用) ──────────────────────────
+# if USE_AIR_FLAT:
+#     air_vol = []
+#     for f in sorted(os.listdir(AIR_PATH)):
+#         if f.endswith(".raw"):
+#             air_vol.append(imreadRaw(os.path.join(AIR_PATH, f), H, W, nSlice=1,
+#                                      dtype=dtype1).squeeze())
+#     mean_air = np.mean(np.stack(air_vol), axis=0) + 1e-6      # 防除零
+#     scatter /= mean_air                                       # element-wise
+#     del air_vol
+# else:           # 使用单张空气图来完成逻辑
+#     # 1) 读取单张 air：nSlice=3 取第1个切片,即带散射
+#     air_img = imreadRaw(AIR_PATH, H, W, nSlice=3,
+#                         dtype=dtype1)[0]
+#
+#     # 2) 做同样的几何处理——左旋 90°，保持坐标对应
+#     air_img = cv2.rotate(air_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+#     imwriteRaw(air_img, out_dir_test / f"Air_noGB_test.raw", dtype=dtype1)  # this code for debug
+#     air_img = cv2.GaussianBlur(air_img, (75, 75), sigma_px)
+#     imwriteRaw(air_img, out_dir_test / f"Air_GB_test.raw", dtype=dtype1)  # this code for debug
+#
+#     # 3) 防除零；把散射归一化到 I/I0 量纲
+#     air_img += 1e-6
+#     scatter /= air_img
+#     imwriteRaw(scatter, out_dir_test / f"scatter_ii0_test.raw", dtype=dtype1)  # this code for debug
+#
+# # out_dir = Path("./proj_with_scatter")
+# # out_dir.mkdir(exist_ok=True, parents=True)
+# # imwriteRaw(scatter, out_dir / f"test4.raw", dtype=dtype1)  # this code for debug
+#
+#
+# # ── 3. 合并到 primary 并做 post-log ───────────────────────────
+# # primary 在前面得到
+# assert primary.shape == scatter.shape, "primary / scatter 尺寸不一致！"
+#
+# total   = -np.log(primary + scatter + 1e-6)      # 加小常数防 log0
+postlog  = -np.log(primary + 1e-6)  # 对primary做postlog,已方便对比
 # ── 4. 输出 ────────────────────────────────────────────────────
 out_dir = Path("./proj_with_scatter")
 out_dir.mkdir(exist_ok=True, parents=True)
 
-imwriteRaw(primary, out_dir/f"Bone{pmma_thickness}_primary_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(primary, out_dir/f"P{pmma_thickness}_primary_muti_{ENERGY_RANGE}kv_by_QM_{month}{day}_{round_num}.raw", dtype=dtype1)
 # imwriteRaw(scatter, out_dir/f"P{pmma_thickness}_scatter_muti_{ENERGY_RANGE}kv_by_QM_1.raw", dtype=dtype1)
 # imwriteRaw(total,   out_dir/f"P{pmma_thickness}_total_muti_{ENERGY_RANGE}kv_by_QM_1.raw",   dtype=dtype1)
-imwriteRaw(postlog, out_dir/f"Bone{pmma_thickness}_primary_to_postlog_{month}{day}_{round_num}.raw", dtype=dtype1)
+imwriteRaw(postlog, out_dir/f"P{pmma_thickness}_primary_to_postlog_muti_{ENERGY_RANGE}kv_by_QM_{month}{day}_{round_num}.raw", dtype=dtype1)
 
-print("primary, primary_to_postlog 已写入", out_dir)
+print("primary, scatter, total, primary_to_postlog 已写入", out_dir)
