@@ -25,19 +25,23 @@ thickness_co2_5 = 5
 
 # 定义材料密度
 density_air = 0.00120479  # 空气
-density_pmma = 0.00120479  # PMMA
-density_iodine5 = 0.35*33.59*1.07  # 碘块 (350 mg/mL)
-density_iodine2 = 0.35*33.59*0.985  # 碘块 (350 mg/mL)
+density_pmma = 1.18  # PMMA
+
+density_iodine5 = 0.35*33.59*1.025  # 碘块 (350 mg/mL)
+
+density_iodine2 = 0.35*33.59*0.985*0.995  # 碘块 (350 mg/mL)
 density_fe = 7.874*0.523  # 铁
 density_ta = 16.65*0.528 # 钽
 density_pt = 21.45*0.475  # 铂
-density_ba = 2*0.334*0.735  # 钡
+
+density_ba = 2*0.334*0.735*1.4  # 钡
+
 density_bone = 1.92*1.031  # 骨骼
 density_co2 = 0.001977*4500  # CO₂
 
 # 定义材料 ID
 AirID = 1
-PMMAID = 1
+PMMAID = 2
 Iodine5ID = 3
 FeID = 4 # (用钢代替)
 TaID = 5 # （用w代替 73->74）
@@ -186,7 +190,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_608.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_618.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 

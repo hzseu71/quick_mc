@@ -32,7 +32,7 @@ spectrum_file = 'spectrum100_Copper0.1mm.txt'
 SCAN_SUFFIX = "530"
 MATERIALS = {
     # 名称  (   密度 g/cm³ , μ(E)： Excel 路径 , 长度： raw 路径 )
-    # "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
+    "pmma": ( 1.19, r"./attenuation_coefficient/pmma_u.xlsx", fr"./sgm/sgm_pmma_{pmma_thickness}mm_{SCAN_SUFFIX}.raw"),
     "fe"  : ( 7.87, r"./attenuation_coefficient/fe_u.xlsx"  , fr"./sgm/sgm_fe_1mm_{SCAN_SUFFIX}.raw"),
     "iodine2":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_2mm_{SCAN_SUFFIX}.raw"),
     "iodine5":(4.93, r"./attenuation_coefficient/iodine_u.xlsx", fr"./sgm/sgm_iodine_5mm_{SCAN_SUFFIX}.raw"),
@@ -92,8 +92,8 @@ for name, (rho, mu_xlsx, raw_path) in MATERIALS.items():
 
 print("Loaded materials:", list(MATERIALS))
 
-TARGET_FACTOR = 0.97        # mgfpj primary ×0.97 → mcgpu
-BONE_THICK_REF = 3.0        # ← 测 0.97 时那张纯骨像素的厚度(cm)
+TARGET_FACTOR = 1.629        # mgfpj primary ×0.97 → mcgpu
+BONE_THICK_REF = 5.0        # ← 测 0.97 时那张纯骨像素的厚度(cm)
 ln_factor = -np.log(TARGET_FACTOR)          # >0
 delta_mu = ln_factor / BONE_THICK_REF       # 标量 (cm-1)
 
@@ -109,7 +109,7 @@ for k, E_keV in enumerate(ENERGY_GRID):
     for name, (rho, _, _) in MATERIALS.items():
         mu = mu_dict[name][k]            # (μ/ρ)_E
         thick = thick_dict[name]         # mm
-        if name == "bone":
+        if name == "ba":
             mu += delta_mu / rho         # ← 只给骨加 Δμ/ρ
         mu_t += mu * rho * thick * MM2CM
 

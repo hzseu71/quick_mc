@@ -42,7 +42,7 @@ def compute_postlog(projection_path, air_path, output_path,image_size):
 if __name__ == "__main__":
     air_image_path = "./scat_raw/air/Bone30_bone_Air_529_1.raw"  # 替换为空气图像的路径
     for pmma_thickness in range(30, 31, 10):
-        projection_image_path = f"./scat_raw/P{pmma_thickness}_muti_100kv_repeat_1_muti_603_5.raw"  # 原始投影图像的路径
-        output_postlog_path = f"./scat_raw/postlog/P{pmma_thickness}_postlog_muti_100kv_repeat_1_muti_603_5.raw"  # 替换为保存 Postlog 图的路径
+        projection_image_path = f"./scat_raw/P{pmma_thickness}_muti_100kv_repeat_1_muti_604_5618.raw"  # 原始投影图像的路径
+        output_postlog_path = f"./scat_raw/postlog/P{pmma_thickness}_postlog_muti_100kv_repeat_1_muti_604_5618.raw"  # 替换为保存 Postlog 图的路径
         image_size = (300, 300)
         compute_postlog(projection_image_path, air_image_path, output_postlog_path,image_size)
