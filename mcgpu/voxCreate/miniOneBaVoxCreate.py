@@ -43,8 +43,8 @@ def mainFunction(thickness_pmma):
     pmma_start_y = 50
     pmma_end_y = 50 + thickness_pmma
     # 设置Ba区域
-    ba_x = 5
-    ba_z = 5
+    ba_x = 10
+    ba_z = 10
     for y in range(0, thickness_ba):
         for x in range(ba_x - length_half, ba_x + length_half):
             for z in range(ba_z - length_half, ba_z + length_half):
