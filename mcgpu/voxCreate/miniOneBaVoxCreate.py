@@ -5,8 +5,8 @@ import numpy as np
 改为 20*20（10cm*10cm的小体积模体，并将附加材料改小）
 Y 是厚度
 """
-VoxSizeX = 20
-VoxSizeZ = 20
+VoxSizeX = 50
+VoxSizeZ = 50
 
 # 体素物理尺寸（单位 cm）
 VoxelSizeX = 0.1
@@ -43,8 +43,8 @@ def mainFunction(thickness_pmma):
     pmma_start_y = 50
     pmma_end_y = 50 + thickness_pmma
     # 设置Ba区域
-    ba_x = 5
-    ba_z = 5
+    ba_x = 25
+    ba_z = 25
     for y in range(0, thickness_ba):
         for x in range(ba_x - length_half, ba_x + length_half):
             for z in range(ba_z - length_half, ba_z + length_half):
