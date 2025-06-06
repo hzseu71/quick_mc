@@ -14,18 +14,18 @@ VoxelSizeZ = 0.1
 VoxelSizeY = 0.1
 
 
-thickness_fe = 1
+thickness_ba = 50
 
 
 # 定义材料密度
 density_air = 0.00120479  # 空气
 density_pmma = 1.18  # PMMA
-density_fe = 7.874  # 铁
+density_ba = 2*0.334*0.735*1.4  # 钡
 
 # 定义材料 ID
 AirID = 1
 PMMAID = 2
-FeID = 3 # (用钢代替)
+BaID = 3 # (用钢代替)
 
 # 输出文件夹（如果不存在）
 output_dir = "./"
@@ -42,13 +42,13 @@ def mainFunction(thickness_pmma):
     length_half = 5
     pmma_start_y = 50
     pmma_end_y = 50 + thickness_pmma
-    # 设置Fe区域5
-    fe_x = 5
-    fe_z = 5
-    for y in range(0, thickness_fe):
-        for x in range(fe_x - length_half, fe_x + length_half):
-            for z in range(fe_z - length_half, fe_z + length_half):
-                mat_id[x, y, z] = FeID
+    # 设置Ba区域
+    ba_x = 28
+    ba_z = 66
+    for y in range(0, thickness_ba):
+        for x in range(ba_x - length_half, ba_x + length_half):
+            for z in range(ba_z - length_half, ba_z + length_half):
+                mat_id[x, y, z] = BaID
 
     mat_id[:, pmma_start_y:pmma_end_y, :] = PMMAID
 
@@ -71,7 +71,7 @@ def mainFunction(thickness_pmma):
         None,  # 占位 (ID=0 不用)
         str(density_air),  # ID=1 => 空气
         str(density_pmma),  # ID=2 => PMMA
-        str(density_fe),  # ID=4 => 铁
+        str(density_ba)  # ID=4 => 铁
     ]
 
     # 预转换数据为列表（更高效）
@@ -88,7 +88,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Fe_606.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Ba_606.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 
