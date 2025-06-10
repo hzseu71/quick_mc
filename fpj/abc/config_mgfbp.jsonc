@@ -1,0 +1,69 @@
+// This is a config sample for mgfbp
+
+{
+  /********************************************************* 
+  * input and output directory and files
+  *********************************************************/
+
+  "InputDir": "./sgm",
+  "OutputDir": "./rec",
+
+  // all the files in the input directory, use regular expression
+  "InputFiles": ".*.raw",
+  // output file name (prefix, replace)
+  "OutputFilePrefix": "",
+  // replace substring in input file name
+  "OutputFileReplace": [ "sgm_", "rec_" ],
+
+  /*********************************************************
+	* sinogram and slice parameters
+	*********************************************************/
+  // number of detector elements
+  "SinogramWidth": 0,
+  // number of frames
+  "SinogramHeight": 0,
+  // number of views for reconstruction
+  "Views": 1000,
+  // number of slices in each sinogram file
+  "SliceCount": 1,
+  // the physical size of detector element size [mm]
+  "DetectorElementSize": 0,
+
+  // source to isocenter distance [mm]
+  "SourceIsocenterDistance": 500,
+  // source to detector distance [mm]
+  "SourceDetectorDistance": 1000,
+
+  /*********************************************************
+	* reconstruction parameters
+  *********************************************************/
+  // image dimension (integer)
+  "ImageDimension": 0,
+  // image pixel size [mm]
+  "PixelSize": 0,
+
+  "WaterMu":0.0265,
+
+   /* reconstruction kernel, avaliable list:
+  *  1. "HammingFilter": t + (1-t)*cos(pi*k/ 2*kn), 1 for ramp kernel, 0 for consine kernel, others are in-between
+  *  2. "QuadraticFilter": (for bone-plus kernel) tow parameters for t and h, three parameters for a, b, c
+  *  3. "Polynomial": an*k^n + ... + a1*k + a0, (n <= 6)
+  *     (For Bone plus kernel: [ -15.9236, -2.1540, 3.1106, 2.3872, 1.0000 ], rebin detector element to 0.7 mm
+  *  4.  "GaussianApodizedRamp": delta (delta=1 match MDCT if sinogram pixel size 0.4 mm), Ramp kernel apodized by a gaussian kernel (exp(-n^2/2/delta^2)), delta is in number of pixels
+  */
+  "HammingFilter": 0.5, 
+
+  /*********************************************************
+	* parameters by default
+  *********************************************************/
+  // rotate the image (positive counterclockwise) [degree]
+  "ImageRotation": 0,
+  // image center [x(mm), y(mm)]
+  "ImageCenter": [ 0, 0 ],
+ 
+  // (OPTIONAL) set water mu to convert the pixel values to HU
+  // unit: mm^-1
+  //"WaterMu": 0.02,  // save filtered sinogram data
+  "SaveFilteredSinogram": false,  // the position (coordinate) of detector center [mm]
+  "DetectorOffcenter": 0
+}

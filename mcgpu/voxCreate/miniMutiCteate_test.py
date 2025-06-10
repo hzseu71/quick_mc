@@ -27,14 +27,14 @@ thickness_co2_5 = 5
 density_air = 0.00120479  # 空气
 density_pmma = 1.18  # PMMA
 
-density_iodine5 = 0.35*33.59*1.025  # 碘块 (350 mg/mL)
+density_iodine5 = 0.35*33.59*1.1  # 碘块 (350 mg/mL)
 
 density_iodine2 = 0.35*33.59*0.985*0.995  # 碘块 (350 mg/mL)
 density_fe = 7.874*0.523  # 铁
 density_ta = 16.65*0.528 # 钽
 density_pt = 21.45*0.475  # 铂
 
-density_ba = 2*0.334*0.735*1.3  # 钡
+density_ba = 2*0.334*0.735*2  # 钡
 
 density_bone = 1.92*1.031  # 骨骼
 density_co2 = 0.001977*4500  # CO₂
@@ -190,7 +190,7 @@ def mainFunction(thickness_pmma):
     vox_lines += data_lines
 
     # 写入文件
-    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_607_1.3.vox"
+    vox_filename = f"{output_dir}/P{thickness_pmma}mm_Muti_QM_607_2.0.vox"
     with open(vox_filename, 'w') as fp:
         fp.writelines(vox_lines)  # 使用writelines直接写入列表
 

@@ -39,7 +39,7 @@ def mainFunction(thickness_pmma):
 
     # 初始化体素空间
     mat_id = np.ones((VoxSizeX, VoxSizeY, VoxSizeZ), dtype=int) * AirID
-    length_half = 3
+    length_half = 4
     pmma_start_y = 50
     pmma_end_y = 50 + thickness_pmma
     # 设置Ba区域

@@ -1,0 +1,58 @@
+// This is a config sample for mgfpj
+
+{
+  /*********************************************************
+	* input and output directory and files
+	*********************************************************/
+  "InputDir": "./phantom",
+  "OutputDir": "./sgm",
+
+  // all the files in the input directory, use regular expression
+  "InputFiles": "img_.*.raw",
+  // output file name (prefix, replace)
+  "OutputFilePrefix": "",
+  // replace substring in input file name
+  "OutputFileReplace": [ "img_", "sgm_" ],
+
+  /*********************************************************
+	* image parameters
+	*********************************************************/
+  // image dimension (integer)
+  "ImageDimension": 512,
+  /* pixel size or image size, just use one of them */
+  // image pixel size [mm]
+  "PixelSize": 0.4,
+
+
+  /*********************************************************
+	* geometry and detector parameters
+	*********************************************************/
+  // source to isocenter distance [mm]
+  "SourceIsocenterDistance": 500,
+  // source to detector distance [mm]
+  "SourceDetectorDistance": 1000,
+  // number of detector elements
+  "DetectorElementCount": 1000,
+  // number of views for reconstruction
+  "Views": 1000,
+  // the physical size of detector element size [mm]
+  "DetectorElementSize": 0.4,
+
+
+
+
+  /*********************************************************
+	* parameters by default
+	*********************************************************/
+  // number of slices in each image file
+  "SliceCount": 1,
+  // start angle (positive counterclockwise) [degree]
+  "StartAngle": 0,
+  // oversample sinogram by increasing the number of detector elements by the factor of number below
+  "OversampleSize": 2,
+    // the position (coordinate) of detector center [mm]
+    "DetectorOffcenter": 0,
+    // (OPTIONAL) Whether the cone beam recon is needed
+  // in case of "false", all other items related to cone beam recon will be null
+  "ConeBeam": false
+}

@@ -10,8 +10,9 @@
   
     // all the files in the input directory, use regular expression
 //     "InputFiles": "pmma_30mm_530.raw",
+        "InputFiles": "air_607.raw",
     // 替换使用的文件名
-    "InputFiles": "ba_50mm_530.raw",
+//    "InputFiles": "ba_50mm_530.raw",
 //    "InputFiles": "bone_40mm_530.raw",
 //    "InputFiles": "fe_1mm_530.raw",
 //    "InputFiles": "iodine_2mm_530.raw",
@@ -26,7 +27,7 @@
     // output file name (prefix, replace)
     "OutputFilePrefix": "",
     // replace substring in input file name
-    "OutputFileReplace": [ "ba_", "sgm_ba_" ],
+    "OutputFileReplace": [ "air_", "sgm_air_" ],
     /*************************************
     Linked Input files
     ************************************/

@@ -1,0 +1,34 @@
+{
+    "InputDir": "./abc/sgm",
+    "OutputDir": "./abc",
+    "InputFiles": "sgm_realHead.raw",
+    "OutputFilePrefix": "",
+    "OutputFileReplace": [
+        "sgm",
+        "rec"
+    ],
+    "DetectorElementCountVertical": 384,
+    "DetectorElementCountHorizontal": 512,
+    "Views": 250,
+    "DetectorElementHeight": 0.776,
+    "DetectorOffsetHorizontal": -2.695331903524263,
+    "DetectorOffsetVertical": 13.977607080856611,
+    "DetectorElementWidth": 0.776,
+    "TotalScanAngle": 205.1358672243976,
+    "SourceIsocenterDistance": 757.6447113169235,
+    "SourceDetectorDistance": 1192.1135800841578,
+    "ImageDimension": 366,
+    "PixelSize": 0.75,
+    "ConeBeam": true,
+    "VoxelHeight": 0.75,
+    "ImageDimensionZ": 253,
+    "GaussianApodizedRamp": 1,
+    "ImageRotation": 180,
+    "ImageCenter": [
+        0,
+        0
+    ],
+    "SaveFilteredSinogram": false,
+    "WaterMu": 0.02,
+    "ImageCenterZ": 8.883432131466352
+}
