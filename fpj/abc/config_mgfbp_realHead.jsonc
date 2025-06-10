@@ -1,7 +1,7 @@
 {
     "InputDir": "./abc/sgm",
     "OutputDir": "./abc",
-    "InputFiles": "sgm_realHead.raw",
+    "InputFiles": "sgm_output_corrected_3D.raw",
     "OutputFilePrefix": "",
     "OutputFileReplace": [
         "sgm",
